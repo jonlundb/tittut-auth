@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Tittut</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px -apple-system, system-ui, sans-serif; display: grid; place-items: center;
+         min-height: 100vh; margin: 0; padding: 0 16px; background: Canvas; color: CanvasText; }
+  p { max-width: 32em; text-align: center; }
+</style>
+</head>
+<body>
+<p id="msg">Skickar dig tillbaka till Tittut…</p>
+<script>
+  // Forwards Slack's OAuth redirect (?code=…&state=… or ?error=…) to the Tittut app.
+  // Nothing is stored or sent anywhere else; the code is useless without the app's secret.
+  var q = new URLSearchParams(location.search);
+  var out = new URLSearchParams();
+  ["code", "state", "error"].forEach(function (k) { if (q.get(k)) out.set(k, q.get(k)); });
+  if (out.toString()) {
+    location.replace("tittut://slack?" + out.toString());
+    setTimeout(function () {
+      document.getElementById("msg").textContent = "Klart. Om Tittut inte öppnades, kolla att appen är igång och försök igen.";
+    }, 1500);
+  } else {
+    document.getElementById("msg").textContent = "Den här sidan används bara av Tittut-appen vid inloggning i Slack.";
+  }
+</script>
+</body>
+</html>
